@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/ywl/mct_loam_ws/src/MCT-LOAM/cmake-build-debug/devel/setup.sh
