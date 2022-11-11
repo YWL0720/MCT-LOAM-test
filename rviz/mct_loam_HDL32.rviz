@@ -76,16 +76,6 @@ Visualization Manager:
         All Enabled: false
         base_link:
           Value: true
-        cam00:
-          Value: true
-        cam01:
-          Value: true
-        cam02:
-          Value: true
-        cam03:
-          Value: true
-        imu:
-          Value: true
         map:
           Value: false
         velodyne:
@@ -100,20 +90,10 @@ Visualization Manager:
       Show Names: true
       Tree:
         world:
-          imu:
-            cam00:
-              {}
-            cam01:
-              {}
-            cam02:
-              {}
-            cam03:
-              {}
-            velodyne:
-              {}
           map:
             base_link:
-              {}
+              velodyne:
+                {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -139,7 +119,7 @@ Visualization Manager:
       Size (Pixels): 1
       Size (m): 0.009999999776482582
       Style: Points
-      Topic: /velodyne_points
+      Topic: /velodyne_points_0
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -229,7 +209,7 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 3.1452062129974365
+      Scale: 5.9598565101623535
       Target Frame: body
       X: 1.843032956123352
       Y: -0.027789507061243057

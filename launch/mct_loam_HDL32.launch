@@ -24,14 +24,17 @@
 
     <!--- -->
     <node pkg="mct_loam" type="mct_loam_odom_estimation_node" name="mct_loam_odom_estimation_node" output="screen"/>
-    <node pkg="mct_loam" type="mct_loam_laser_processing_node" name="mct_loam_laser_processing_node" output="screen"/>
+    <node pkg="mct_loam" type="mct_loam_laser_processing_node" name="mct_loam_laser_processing_node" output="screen">
+            <remap from="velodyne_points" to="velodyne_points_0" />
+    </node>
+
     
     <node pkg="tf" type="static_transform_publisher" name="word2map_tf"  args="0 0 0 0 0 0 /world /map 10" />
     <node pkg="tf" type="static_transform_publisher" name="velodyne"  args="0 0 0 0 0 0 /base_link /velodyne 10" />
     
     <arg name="rviz" default="true" />
     <group if="$(arg rviz)">
-        <node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find mct_loam)/rviz/mct_loam.rviz" />
+        <node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find mct_loam)/rviz/mct_loam_HDL32.rviz" />
     </group>
 
     
