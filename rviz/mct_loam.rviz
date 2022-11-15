@@ -77,21 +77,21 @@ Visualization Manager:
         base_link:
           Value: true
         cam00:
-          Value: true
+          Value: false
         cam01:
-          Value: true
+          Value: false
         cam02:
-          Value: true
+          Value: false
         cam03:
-          Value: true
+          Value: false
         imu:
-          Value: true
+          Value: false
         map:
           Value: false
         velodyne:
           Value: true
         world:
-          Value: true
+          Value: false
       Marker Alpha: 1
       Marker Scale: 10
       Name: TF
@@ -229,10 +229,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 3.1452062129974365
+      Scale: 24.831087112426758
       Target Frame: body
-      X: 1.843032956123352
-      Y: -0.027789507061243057
+      X: 25.124595642089844
+      Y: -3.3954498767852783
     Saved: ~
 Window Geometry:
   Displays:
@@ -252,5 +252,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1853
-  X: 3173
-  Y: 101
+  X: 2759
+  Y: 188

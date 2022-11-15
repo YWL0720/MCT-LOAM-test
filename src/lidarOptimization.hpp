@@ -7,6 +7,7 @@
 #include <ceres/rotation.h>
 #include <eigen3/Eigen/Dense>
 
+
 /*!
  * @brief 位于当前帧前半段的线特征约束
  */
@@ -18,11 +19,11 @@ struct LidarFirstEdgeFactor
                          q_w_last_end(q_w_last_end_), t_w_last_end(t_w_last_end_), time(time_ * 2) {};
 
     template <typename T>
-    bool operator()(const T* parameters_middle, T* residual) const
+    bool operator()(const T* parameters_middle_q, const T* parameters_middle_t, T* residual) const
     {
         // 优化变量 当前帧中间时刻的位姿
-        Eigen::Quaternion<T> q_w_curr_middle{parameters_middle[3], parameters_middle[0], parameters_middle[1], parameters_middle[2]};
-        Eigen::Matrix<T, 3, 1> t_w_curr_middle{parameters_middle[4], parameters_middle[5], parameters_middle[6]};
+        Eigen::Quaternion<T> q_w_curr_middle{parameters_middle_q[3], parameters_middle_q[0], parameters_middle_q[1], parameters_middle_q[2]};
+        Eigen::Matrix<T, 3, 1> t_w_curr_middle{parameters_middle_t[0], parameters_middle_t[1], parameters_middle_t[2]};
 
         // 上一帧结束时刻的位姿，为已知固定
         Eigen::Quaternion<T> q_w_last_end_T{T(q_w_last_end.w()), T(q_w_last_end.x()), T(q_w_last_end.y()), T(q_w_last_end.z())};
@@ -60,7 +61,7 @@ struct LidarFirstEdgeFactor
                                        const Eigen::Vector3d last_point_b_, const Eigen::Quaterniond q_w_last_end_,
                                        const Eigen::Vector3d t_w_last_end_, double time_)
     {
-        return (new ceres::AutoDiffCostFunction<LidarFirstEdgeFactor, 3, 7>(
+        return (new ceres::AutoDiffCostFunction<LidarFirstEdgeFactor, 3, 4, 3>(
                 new LidarFirstEdgeFactor(curr_point_, last_point_a_, last_point_b_, q_w_last_end_, t_w_last_end_, time_)
                 ));
     }
@@ -82,14 +83,15 @@ struct LidarSecondEdgeFactor
     : curr_point(curr_point_), last_point_a(last_point_a_), last_point_b(last_point_b_), time((time_ * 2) - 1) {};
 
     template <typename T>
-    bool operator()(const T* parameters_middle, const T* parameters_end, T* residual) const
+    bool operator()(const T* parameters_middle_q, const T* parameters_middle_t,
+            const T* parameters_end_q, const T* parameters_end_t, T* residual) const
     {
         // 优化变量，当前帧中间时刻和结束时刻的位姿
-        Eigen::Quaternion<T> q_w_curr_middle{parameters_middle[3], parameters_middle[0], parameters_middle[1], parameters_middle[2]};
-        Eigen::Matrix<T, 3, 1> t_w_curr_middle{parameters_middle[4], parameters_middle[5], parameters_middle[6]};
+        Eigen::Quaternion<T> q_w_curr_middle{parameters_middle_q[3], parameters_middle_q[0], parameters_middle_q[1], parameters_middle_q[2]};
+        Eigen::Matrix<T, 3, 1> t_w_curr_middle{parameters_middle_t[0], parameters_middle_t[1], parameters_middle_t[2]};
 
-        Eigen::Quaternion<T> q_w_curr_end{parameters_end[3], parameters_end[0], parameters_end[1], parameters_end[2]};
-        Eigen::Matrix<T, 3, 1> t_w_curr_end{parameters_end[4], parameters_end[5], parameters_end[6]};
+        Eigen::Quaternion<T> q_w_curr_end{parameters_end_q[3], parameters_end_q[0], parameters_end_q[1], parameters_end_q[2]};
+        Eigen::Matrix<T, 3, 1> t_w_curr_end{parameters_end_t[0], parameters_end_t[1], parameters_end_t[2]};
 
         // 计算点和关联点
         Eigen::Matrix<T, 3, 1> curr_point_T{T(curr_point.x()), T(curr_point.y()), T(curr_point.z())};
@@ -120,7 +122,7 @@ struct LidarSecondEdgeFactor
     static ceres::CostFunction* Create(const Eigen::Vector3d curr_point_, const Eigen::Vector3d last_point_a_,
                                        const Eigen::Vector3d last_point_b_, double time_)
     {
-        return (new ceres::AutoDiffCostFunction<LidarSecondEdgeFactor, 3, 7, 7>(
+        return (new ceres::AutoDiffCostFunction<LidarSecondEdgeFactor, 3, 4, 3, 4, 3>(
                 new LidarSecondEdgeFactor(curr_point_, last_point_a_, last_point_b_, time_)
         ));
     }
@@ -136,9 +138,9 @@ struct LidarSecondEdgeFactor
 struct LidarFirstPlaneFactor
 {
     LidarFirstPlaneFactor(Eigen::Vector3d curr_point_, Eigen::Vector3d plane_unit_norm_, double negative_OA_dot_norm_,
-                          Eigen::Quaterniond q_w_last_end_, Eigen::Vector3d t_w_last_end, double time_) :
+                          Eigen::Quaterniond q_w_last_end_, Eigen::Vector3d t_w_last_end_, double time_) :
                           curr_point(curr_point_), plane_unit_norm(plane_unit_norm_), negative_OA_dot_norm(negative_OA_dot_norm_),
-                          q_w_last_end(q_w_last_end_), t_w_last_end(t_w_last_end), time(time_ * 2) {};
+                          q_w_last_end(q_w_last_end_), t_w_last_end(t_w_last_end_), time(time_ * 2) {};
 
 
     template <typename T>
@@ -186,9 +188,9 @@ struct LidarFirstPlaneFactor
 
 
     Eigen::Vector3d curr_point, plane_unit_norm;
+    double negative_OA_dot_norm;
     Eigen::Quaterniond q_w_last_end;
     Eigen::Vector3d t_w_last_end;
-    double negative_OA_dot_norm;
     double time;
 };
 

@@ -1,6 +1,3 @@
-// Author of FLOAM: Wang Han 
-// Email wh200720041@gmail.com
-// Homepage https://wanghan.pro
 #ifndef _ODOM_ESTIMATION_CLASS_H_
 #define _ODOM_ESTIMATION_CLASS_H_
 
@@ -33,7 +30,6 @@
 #include "lidarOptimization.h"
 #include <ros/ros.h>
 
-
 class OdomEstimationClass 
 {
 
@@ -46,46 +42,37 @@ class OdomEstimationClass
 		void getMap(pcl::PointCloud<pcl::PointXYZI>::Ptr& laserCloudMap);
 
 		Eigen::Isometry3d odom;
-        /************************************/
-        // 里程计
-        // odom_m, odom_e 分别为当前帧中间时刻和当前帧结束时刻
-        // last_odom_m, last_odom_e 分别为上一帧中间时刻和上一帧结束时刻
-        Eigen::Isometry3d odom_m;
-        Eigen::Isometry3d odom_e;
-        Eigen::Isometry3d last_odom_m;
-        Eigen::Isometry3d last_odom_e;
+        // 里程计变量
 
+        Eigen::Isometry3d odom_curr_middle;
+        Eigen::Isometry3d odom_curr_end;
+
+        Eigen::Isometry3d odom_last_end;
+        Eigen::Isometry3d odom_last_middle;
+        // 上一帧结束时刻的位姿
         Eigen::Quaterniond q_w_last_end;
         Eigen::Vector3d t_w_last_end;
 
-        Eigen::Quaterniond q_w_last_middle;
-        Eigen::Vector3d t_w_last_middle;
-        // 前一帧两段时间内的平均速度
-        Eigen::Isometry3d velocity;
-        std::vector<Eigen::Isometry3d> velocity_history;
-        /************************************/
 
 		pcl::PointCloud<pcl::PointXYZI>::Ptr laserCloudCornerMap;
 		pcl::PointCloud<pcl::PointXYZI>::Ptr laserCloudSurfMap;
 	private:
 		//optimization variable
-
-        /************************************************************************************/
-        // 优化变量
-        // parameters_middle-当前帧中间时刻在世界坐标系下的位姿
-        // parameters_end-当前帧结束时刻在世界坐标系下的位姿
-        double parameters_middle[7] = {0, 0, 0, 1, 0, 0, 0};
-        double parameters_end[7] = {0, 0, 0, 1, 0, 0, 0};
-
-        Eigen::Map<Eigen::Quaterniond> q_w_curr_m = Eigen::Map<Eigen::Quaterniond>(parameters_middle);
-        Eigen::Map<Eigen::Vector3d> t_w_curr_m = Eigen::Map<Eigen::Vector3d>(parameters_middle + 4);
-        Eigen::Map<Eigen::Quaterniond> q_w_curr_e = Eigen::Map<Eigen::Quaterniond>(parameters_end);
-        Eigen::Map<Eigen::Vector3d> t_w_curr_e = Eigen::Map<Eigen::Vector3d>(parameters_end + 4);
-        /************************************************************************************/
-
 		double parameters[7] = {0, 0, 0, 1, 0, 0, 0};
 		Eigen::Map<Eigen::Quaterniond> q_w_curr = Eigen::Map<Eigen::Quaterniond>(parameters);
 		Eigen::Map<Eigen::Vector3d> t_w_curr = Eigen::Map<Eigen::Vector3d>(parameters + 4);
+
+        // 优化变量 分别为当前帧中间时刻的位姿和当前帧结束时刻的位姿
+        double parameters_middle_q[4] = {0, 0, 0, 1};
+        double parameters_middle_t[3] = {0, 0, 0};
+
+        double parameters_end_q[4] = {0, 0, 0, 1};
+        double parameters_end_t[3] = {0, 0, 0};
+
+        Eigen::Map<Eigen::Quaterniond> q_w_curr_middle = Eigen::Map<Eigen::Quaterniond>(parameters_middle_q);
+        Eigen::Map<Eigen::Vector3d> t_w_curr_middle = Eigen::Map<Eigen::Vector3d>(parameters_middle_t);
+        Eigen::Map<Eigen::Quaterniond> q_w_curr_end = Eigen::Map<Eigen::Quaterniond>(parameters_end_q);
+        Eigen::Map<Eigen::Vector3d> t_w_curr_end = Eigen::Map<Eigen::Vector3d>(parameters_end_t);
 
 
 
@@ -106,13 +93,6 @@ class OdomEstimationClass
 		int optimization_count;
 
 		//function
-        /********************************************************************/
-        void addEdgeCostFactorNew(const pcl::PointCloud<pcl::PointXYZI>::Ptr& pc_in, const pcl::PointCloud<pcl::PointXYZI>::Ptr& map_in, ceres::Problem& problem, ceres::LossFunction* loss_function);
-
-        void addSurfCostFactorNew(const pcl::PointCloud<pcl::PointXYZI>::Ptr& pc_in, const pcl::PointCloud<pcl::PointXYZI>::Ptr& map_in, ceres::Problem& problem, ceres::LossFunction* loss_function);
-        void pointAssociateToMapNew(pcl::PointXYZI const *const pi, pcl::PointXYZI *const po);
-        /********************************************************************/
-
 		void addEdgeCostFactor(const pcl::PointCloud<pcl::PointXYZI>::Ptr& pc_in, const pcl::PointCloud<pcl::PointXYZI>::Ptr& map_in, ceres::Problem& problem, ceres::LossFunction *loss_function);
 		void addSurfCostFactor(const pcl::PointCloud<pcl::PointXYZI>::Ptr& pc_in, const pcl::PointCloud<pcl::PointXYZI>::Ptr& map_in, ceres::Problem& problem, ceres::LossFunction *loss_function);
 		void addPointsToMap(const pcl::PointCloud<pcl::PointXYZI>::Ptr& downsampledEdgeCloud, const pcl::PointCloud<pcl::PointXYZI>::Ptr& downsampledSurfCloud);

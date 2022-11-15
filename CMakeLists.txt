@@ -57,7 +57,7 @@ catkin_package(
 add_executable(mct_loam_laser_processing_node src/laserProcessingNode.cpp src/laserProcessingClass.cpp src/lidar.cpp)
 target_link_libraries(mct_loam_laser_processing_node ${EIGEN3_LIBRARIES} ${catkin_LIBRARIES} ${CERES_LIBRARIES})
 
-add_executable(mct_loam_odom_estimation_node src/odomEstimationNode.cpp src/lidarOptimization.cpp src/lidar.cpp src/odomEstimationClass.cpp src/lidarOptimization.hpp)
+add_executable(mct_loam_odom_estimation_node src/odomEstimationNode.cpp src/lidarOptimization.cpp src/lidar.cpp src/odomEstimationClass.cpp src/LidarFactor.hpp)
 target_link_libraries(mct_loam_odom_estimation_node ${EIGEN3_LIBRARIES} ${catkin_LIBRARIES} ${CERES_LIBRARIES})
 
 add_executable(mct_loam_laser_mapping_node src/laserMappingNode.cpp src/laserMappingClass.cpp src/lidar.cpp)

@@ -22,6 +22,7 @@ void LaserProcessingClass::featureExtraction(const pcl::PointCloud<pcl::PointXYZ
         endOri -= 2 * M_PI;
     else if (endOri - startOri < M_PI)
         endOri += 2 * M_PI;
+        
 
     bool halfPassed = false;
 
@@ -101,10 +102,7 @@ void LaserProcessingClass::featureExtraction(const pcl::PointCloud<pcl::PointXYZ
 
         float time = (ori - startOri) / (endOri - startOri);
 
-
         pc_in->points[i].intensity = time;
-
-
         /*******************************************************************************/
 
 

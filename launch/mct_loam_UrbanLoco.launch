@@ -51,7 +51,7 @@
     </node>
     
     
-    <node name="playbag" pkg="rosbag" type="play" args="--clock /media/ywl/T7/dataset/test2.bag" >
+    <node name="playbag" pkg="rosbag" type="play" args="--clock /media/ywl/T7/dataset/test2.bag -r 0.1" >
     	<remap from="/velodyne_points_0" to="/velodyne_points" />
     </node>
 

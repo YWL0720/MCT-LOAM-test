@@ -1,6 +1,3 @@
-// Author of FLOAM: Wang Han 
-// Email wh200720041@gmail.com
-// Homepage https://wanghan.pro
 #ifndef _LASER_PROCESSING_CLASS_H_
 #define _LASER_PROCESSING_CLASS_H_
 
@@ -12,7 +9,6 @@
 #include <pcl/filters/passthrough.h>
 #include <pcl/filters/extract_indices.h>
 #include <pcl/filters/crop_box.h>
-#include <ros/ros.h>
 
 #include "lidar.h"
 
