@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: mct_loam
-Description: Description of mct_loam
-Version: 0.0.0
-Cflags: -I${prefix}/include -I/usr/local/include/eigen3
-Libs: -L${prefix}/lib 
-Requires: geometry_msgs nav_msgs roscpp rospy std_msgs
